@@ -8,7 +8,7 @@ import Random
 import Cell
 import Window
 import Task
- 
+
 main =
     Html.program
         { init = init
@@ -19,7 +19,7 @@ main =
 
 -- MODEL
 
-type alias GameSurface = 
+type alias GameSurface =
     { vsize: Int
     , hsize: Int
     }
@@ -39,7 +39,7 @@ init : ( Model, Cmd Msg )
 init =
     let
         gameSurface = { vsize = 0, hsize = 0 }
-        model = { aliveCells = [], gameSurface = gameSurface }
+        model = { aliveCells = [(4,4), (4, 5), (5, 5), (6, 6), (7, 7), (8, 10), (20,2), (22,3), (22,15)], gameSurface = gameSurface }
     in
         (model, Task.perform ResizeBoard Window.size)
 
@@ -93,10 +93,12 @@ view {aliveCells, gameSurface} =
                 , ( "height", cellSizeStr ++ "px" )
                 ]
 
-        rows = List.range 0 gameSurface.vsize 
+        renderCellAt = renderCell aliveCells
+
+        rows = List.range 0 gameSurface.vsize
             |> List.map (\_ -> List.range 0 gameSurface.hsize)
-            |> List.map
-                (\row -> tr [] (row |> List.map (\_ -> td [ cellStyle ] [ (Cell.render Cell.Alive) ])))
+            |> List.indexedMap
+                (\y row -> tr [] (row |> List.indexedMap (\x col -> td [ cellStyle ] [ (renderCellAt (x, y)) ])))
 
         lightsTable =
             table [] rows
@@ -105,6 +107,13 @@ view {aliveCells, gameSurface} =
             [ css "style.css"
             , div [ class "board" ] [ table [] rows ]
             ]
+
+renderCell : List Coords -> Coords -> Html Msg
+renderCell aliveCells coords =
+    let
+        state = if List.member coords aliveCells then Cell.Alive else Cell.Dead
+    in
+       Cell.render state
 
 
 css : String -> Html a
