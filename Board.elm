@@ -42,7 +42,7 @@ init : ( Model, Cmd Msg )
 init =
     let
         gameSurface = { vsize = 0, hsize = 0 }
-        model = { aliveCells = [(4,4), (4, 5), (4, 6), (8, 10), (20,2), (22,3), (22,15)], gameSurface = gameSurface }
+        model = { aliveCells = [(4,4), (4, 5), (4, 6), (8, 10), (8, 8), (8, 5), (7, 5), (6, 5),  (20,2), (22,3), (22,15)], gameSurface = gameSurface }
     in
         (model, Task.perform ResizeBoard Window.size)
 
